@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MPS Radio Tracking App</title>
+</head>
+<body>
+    <h1>Radio Tracking Dashboard</h1>
+    <p>Welcome, {{ current_user.username }}!</p>
+    <a href="{{ url_for('main.logout') }}">Logout</a>
+
+    <h2>Available Radios</h2>
+    <ul>
+        {% for radio in radios %}
+            <li>{{ radio.serial_number }} - {{ radio.model_name }} ({{ 'Issued' if radio.is_issued else 'Available' }})
+                {% if not radio.is_issued %}
+                    <a href="{{ url_for('main.issue_radio', radio_id=radio.id) }}">Issue</a>
+                {% else %}
+                    <a href="{{ url_for('main.return_radio', radio_id=radio.id) }}">Return</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
