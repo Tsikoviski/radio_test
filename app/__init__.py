@@ -1,22 +1,12 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from flask_migrate import Migrate
+from flask_login import LoginManager, UserMixin
 
-db = SQLAlchemy()
 login_manager = LoginManager()
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object('config.Config')
+class User(UserMixin):
+    def __init__(self, user_id):
+        self.id = user_id
 
-    db.init_app(app)
-    migrate = Migrate(app, db)
-
-    login_manager.init_app(app)
-    login_manager.login_view = 'login'
-
-    from . import routes
-    app.register_blueprint(routes.bp)
-
-    return app
+@login_manager.user_loader
+def load_user(user_id):
+    # Load user from your database or other storage
+    return User(user_id)
